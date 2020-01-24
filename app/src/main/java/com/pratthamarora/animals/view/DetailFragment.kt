@@ -1,11 +1,17 @@
 package com.pratthamarora.animals.view
 
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.palette.graphics.Palette
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.pratthamarora.animals.R
 import com.pratthamarora.animals.model.Animals
 import com.pratthamarora.animals.utils.getProgressDrawable
@@ -44,6 +50,24 @@ class DetailFragment : Fragment() {
         animalLifeSpan.text = animals?.lifeSpan
         animalDiet.text = animals?.diet
 
+        animals?.imageUrl?.let { setupBGColor(it) }
+    }
+
+    private fun setupBGColor(imageUrl: String) {
+        Glide.with(this).asBitmap().load(imageUrl).into(object : CustomTarget<Bitmap>() {
+            override fun onLoadCleared(placeholder: Drawable?) {
+
+            }
+
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                Palette.from(resource).generate { palette ->
+                    val intColor = palette?.lightMutedSwatch?.rgb ?: 0
+                    animalDetailLayout.setBackgroundColor(intColor)
+
+                }
+            }
+
+        })
     }
 
 }
