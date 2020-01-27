@@ -3,6 +3,7 @@ package com.pratthamarora.animals.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.pratthamarora.animals.di.AppModule
 import com.pratthamarora.animals.di.DaggerViewModelComponent
 import com.pratthamarora.animals.model.AnimalService
 import com.pratthamarora.animals.model.Animals
@@ -31,10 +32,14 @@ class ListViewModel(application: Application) : AndroidViewModel(application) {
     lateinit var apiService: AnimalService
 
     init {
-        DaggerViewModelComponent.create().inject(this)
+        DaggerViewModelComponent.builder()
+            .appModule(AppModule(getApplication()))
+            .build()
+            .inject(this)
     }
 
-    private val prefs = SharedPreferencesHelper(getApplication())
+    @Inject
+    lateinit var prefs: SharedPreferencesHelper
 
     private var invalidApiKey = false
 
